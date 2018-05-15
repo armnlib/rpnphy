@@ -287,12 +287,16 @@ ZABS_SCA_SW_SNOW_ROOF(:) = ZSCA_SW(:) * (1. - PASNOW_ROOF(:))
 !              ------------------------------------
 !
 DO JI=1,SIZE(PZENITH(:))
-    IF (ABS(0.5*XPI-PZENITH(JI)) <  1.E-6) THEN
-        IF(0.5*XPI-PZENITH(JI) >= 0.) ZTANZEN(JI)=TAN(0.5*XPI-1.E-6)
-        IF(0.5*XPI-PZENITH(JI) < 0.) ZTANZEN(JI)=TAN(0.5*XPI+1.E-6)
-    ELSE
-        ZTANZEN(:) = TAN(PZENITH(:))
-    ENDIF
+!
+  IF (ABS(0.5*XPI-PZENITH(JI)) <  1.E-6) THEN
+    IF(0.5*XPI-PZENITH(JI) > 0.)  ZTANZEN(JI)=TAN(0.5*XPI-1.E-6)
+    IF(0.5*XPI-PZENITH(JI) <= 0.) ZTANZEN(JI)=TAN(0.5*XPI+1.E-6)
+  ELSEIF (ABS(PZENITH(JI)) <  1.E-6) THEN
+    ZTANZEN(JI)=SIGN(1.,PZENITH(JI))*TAN(1.E-6)
+  ELSE
+    ZTANZEN(JI) = TAN(PZENITH(JI))
+  ENDIF
+
 ENDDO
 
 !*      2.1    radiation coefficients
